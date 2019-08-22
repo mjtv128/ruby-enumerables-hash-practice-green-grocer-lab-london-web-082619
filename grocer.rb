@@ -1,58 +1,43 @@
 def consolidate_cart(cart)
-  final = {}
-  cart.each{|item|
-  item.each{|name, info|
-  if final[name] == nil 
-    final[name] = info 
-    final[name][:count] = 1
-  else 
-    final[name][:count] += 1 
-  end 
-  }
-  }
-  final
+  # code here	  consolidated_cart = {}
+
+   cart.each do |item|
+    item_name = item.keys[0]
+
+     consolidated_cart[item_name] = item.values[0]
+
+     if consolidated_cart[item_name][:count] 
+      consolidated_cart[item_name][:count] += 1
+    else
+      consolidated_cart[item_name][:count] = 1
+    end
+  end
+
+   consolidated_cart
 end
 
 def apply_coupons(cart, coupons)
-  final={}
-  cart.each{|food, info|
-  coupons.each{|coupon|
-  if food == coupon[:item] && info[:count] >= coupon[:num]
-    info[:count] = info[:count] - coupon[:num]
-    if final["#{food} W/COUPON"]
-      final["#{food} W/COUPON"][:count] += 1 
-    else 
-      final["#{food} W/COUPON"] = {:price => coupon[:cost], :clearance => info[:clearance], :count => 1}
-    end 
-  end 
-  }
-  final[food] = info
-  }
-  final
-end
+  # code here	  coupons.each do |coupon|
+    coupon_name = coupon[:item]
+    coupon_item_num = coupon[:num]
+    cart_item = cart[coupon_name]
 
-def apply_clearance(cart)
-  cart.each{|food, info|
-  if info[:clearance]
-    info[:price] = (info[:price] * 0.8).round(2)
-  end 
-  }
-  cart
-end
+     next if cart_item.nil? || cart_item[:count] < coupon_item_num
 
-def checkout(cart, coupons)
-  cart = consolidate_cart(cart)
-  cart = apply_coupons(cart, coupons)
-  cart = apply_clearance(cart)
-  total = 0
-  cart.each do |itemname, data|
-    total += ( data[:price] * data[:count] )
+     cart_item[:count] -= coupon_item_num
+
+     coupon_in_cart = cart["#{coupon_name} W/COUPON"]
+
+     if coupon_in_cart
+      coupon_in_cart[:count] += 1
+    else
+      cart["#{coupon_name} W/COUPON"] = { 
+        price: coupon[:cost], 
+        clearance: cart_item[:clearance], 
+        count: 1
+      }
+    end
   end
-  if total > 100
-    puts total
-    total = total - (total * 0.1 )
-    #total.round(2)
-  end
-  total
-end
 
+   cart
+end	

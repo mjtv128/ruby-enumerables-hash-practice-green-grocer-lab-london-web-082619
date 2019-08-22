@@ -1,4 +1,4 @@
-def consolidate_cart(cart:[])
+def consolidate_cart(cart)
   # code here	  consolidated_cart = {}
 
    cart.each do |item|
@@ -16,7 +16,7 @@ def consolidate_cart(cart:[])
    consolidated_cart
 end
 
-def apply_coupons(cart:[], coupons:[])
+def apply_coupons(cart, coupons)
   # code here	  coupons.each do |coupon|
     coupon_name = coupon[:item]
     coupon_item_num = coupon[:num]
